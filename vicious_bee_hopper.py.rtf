@@ -1,0 +1,62 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2580
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Consolas;}
+{\colortbl;\red255\green255\blue255;\red252\green99\blue95;\red0\green0\blue0;\red120\green129\blue140;
+\red150\green204\blue255;\red198\green146\blue255;\red104\green177\blue255;}
+{\*\expandedcolortbl;;\cssrgb\c100000\c48235\c44706;\cssrgb\c0\c0\c0;\cssrgb\c54510\c58039\c61961;
+\cssrgb\c64706\c83922\c100000;\cssrgb\c82353\c65882\c100000;\cssrgb\c47451\c75294\c100000;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs28 \cf2 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 import\cf3 \strokec3  pyautogui\
+\cf2 \strokec2 import\cf3 \strokec3  time\
+\cf2 \strokec2 import\cf3 \strokec3  requests\
+\cf2 \strokec2 from\cf3 \strokec3  pynput \cf2 \strokec2 import\cf3 \strokec3  keyboard\
+\
+\pard\pardeftab720\partightenfactor0
+\cf4 \strokec4 # Webhook URL (replace with your own)\cf3 \strokec3 \
+webhook_url = \cf5 \strokec5 'https://your-webhook-url'\cf3 \strokec3 \
+\
+\cf4 \strokec4 # List of fields to check for Vicious Bee\cf3 \strokec3 \
+fields = [\cf5 \strokec5 'pepper_field.png'\cf3 \strokec3 , \cf5 \strokec5 'mountain_top.png'\cf3 \strokec3 , \cf5 \strokec5 'rose_field.png'\cf3 \strokec3 , \cf5 \strokec5 'cactus_field.png'\cf3 \strokec3 , \cf5 \strokec5 'spider_field.png'\cf3 \strokec3 ]\
+\
+\cf4 \strokec4 # Function to send a webhook notification\cf3 \strokec3 \
+\pard\pardeftab720\partightenfactor0
+\cf2 \strokec2 def\cf3 \strokec3  \cf6 \strokec6 send_webhook_notification\cf3 \strokec3 (message):\
+    data = \{\
+        \cf5 \strokec5 "content"\cf3 \strokec3 : message\
+    \}\
+    requests.post(webhook_url, json=data)\
+\
+\pard\pardeftab720\partightenfactor0
+\cf4 \strokec4 # Function to collect stingers\cf3 \strokec3 \
+\pard\pardeftab720\partightenfactor0
+\cf2 \strokec2 def\cf3 \strokec3  \cf6 \strokec6 collect_stingers\cf3 \strokec3 ():\
+    \cf2 \strokec2 while\cf3 \strokec3  \cf7 \strokec7 True\cf3 \strokec3 :\
+        \cf2 \strokec2 for\cf3 \strokec3  field \cf2 \strokec2 in\cf3 \strokec3  fields:\
+            \cf2 \strokec2 if\cf3 \strokec3  pyautogui.locateOnScreen(field, confidence=\cf7 \strokec7 0.8\cf3 \strokec3 ):\
+                pyautogui.click(pyautogui.locateCenterOnScreen(field, confidence=\cf7 \strokec7 0.8\cf3 \strokec3 ))\
+                send_webhook_notification(\cf5 \strokec5 "Vicious Bee detected!"\cf3 \strokec3 )\
+        time.sleep(\cf7 \strokec7 10\cf3 \strokec3 )  \cf4 \strokec4 # Wait for 10 seconds before checking the next field\cf3 \strokec3 \
+        time.sleep(\cf7 \strokec7 1800\cf3 \strokec3 )  \cf4 \strokec4 # Wait for 1800 seconds (30 minutes)\cf3 \strokec3 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf4 \strokec4 # Function to start/stop the macro\cf3 \strokec3 \
+\pard\pardeftab720\partightenfactor0
+\cf2 \strokec2 def\cf3 \strokec3  \cf6 \strokec6 on_press\cf3 \strokec3 (key):\
+    \cf2 \strokec2 if\cf3 \strokec3  key == keyboard.Key.f12:\
+        \cf2 \strokec2 if\cf3 \strokec3  \cf2 \strokec2 not\cf3 \strokec3  collect_stingers.is_running:\
+            collect_stingers.is_running = \cf7 \strokec7 True\cf3 \strokec3 \
+            collect_stingers()\
+        \cf2 \strokec2 else\cf3 \strokec3 :\
+            collect_stingers.is_running = \cf7 \strokec7 False\cf3 \strokec3 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf4 \strokec4 # Set the initial state\cf3 \strokec3 \
+collect_stingers.is_running = \cf7 \strokec7 False\cf3 \strokec3 \
+\
+\cf4 \strokec4 # Listen for the F12 key to start/stop the macro\cf3 \strokec3 \
+\pard\pardeftab720\partightenfactor0
+\cf2 \strokec2 with\cf3 \strokec3  keyboard.Listener(on_press=on_press) \cf2 \strokec2 as\cf3 \strokec3  listener:\
+    listener.join()}
